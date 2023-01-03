@@ -4,6 +4,11 @@ const app = express();
 const port = process.env.PORT || 5000;
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
+// Use Middleware
+app.use(cors());
+app.use(express.json());
+
+
 // User: practice1
 // Pass: Wib6gZLejYCaDEKC
 
@@ -23,7 +28,15 @@ async function run() {
         await client.connect();
         const userCollection = client.db("foodExpress").collection("user");
 
-        // POST or ADD user 1.1
+        // Get or Show user in Client site 2.1
+        app.get('/user', async (req, res) => {
+            const query = {};
+            const cursor = userCollection.find(query);
+            const users = await cursor.toArray();
+            res.send(users);
+        })
+
+        // POST or ADD new user 1.1
         app.post('/user', async (req, res) => {
             const newUser = req.body;
             console.log('Adding new user', newUser);
